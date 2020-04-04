@@ -10,18 +10,20 @@ Storleken på mina mockupbilder är 1440 x 2880 px. Assets kommer sedan finnas i
 
 Det första man ser när man öppnar appen är denna välkomnande skärm:
 
-<img title="" src="Mockups/Start screen.png" alt="" data-align="center" width="298">
+<img src="Mockups/Start screen.png" width="300">
 
 Sedan får man välja svårighet med två sliders:
 
-<img title="" src="Mockups/Choose difficulty.png" alt="" width="299" data-align="center">
+<img src="Mockups/Choose difficulty.png" width="300">
 
 Sedan börjar spelet:
 
-<img title="" src="Mockups/Gameplay.png" alt="" width="300" data-align="center">
+<img src="Mockups/Gameplay.png" width="300">
 
-När man förlorar:<img title="" src="Mockups/Game over.png" alt="" width="300" data-align="center">
+När man förlorar:
+
+<img src="Mockups/Game over.png" width="300">
 
 När man vinner:
 
-<img title="" src="Mockups/You won.png" alt="" width="300" data-align="center">
+<img src="Mockups/You won.png" width="300">
