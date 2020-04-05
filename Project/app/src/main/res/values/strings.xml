@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Save him</string>
+    <string name="play">PLAY</string>
+    <string name="choose_difficulty">Choose difficulty</string>
+    <string name="mean">Mean</string>
+    <string name="standard_deviation">Standard deviation</string>
+    <string name="save_the_man">SAVE THE MAN</string>
 </resources>
