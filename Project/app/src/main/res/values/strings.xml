@@ -6,4 +6,9 @@
     <string name="standard_deviation">Standard deviation</string>
     <string name="save_the_man">SAVE THE MAN</string>
     <string name="the_dying_man">The dying man</string>
+    <string name="you_murdered_him">YOU SQUISHED HIM</string>
+    <string name="disappointed">disappointed</string>
+    <string name="try_again">TRY AGAIN</string>
+    <string name="change_difficulty">CHANGE DIFFICULTY</string>
+    <string name="home">HOME</string>
 </resources>

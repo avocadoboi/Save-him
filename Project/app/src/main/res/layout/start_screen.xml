@@ -29,7 +29,6 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/button_play"
         style="@style/button_big"
-        android:onClick="play"
         android:text="@string/play"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

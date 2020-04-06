@@ -1,9 +1,11 @@
 package com.bjornsundin.save_him
 
+import android.content.Intent
 import android.content.res.Resources
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import android.widget.GridLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
@@ -59,6 +61,7 @@ class Game : AppCompatActivity() {
             alignmentMode = GridLayout.ALIGN_BOUNDS
         }
         val guessedLetterViews = ArrayList<TextView>()
+        var numberOfCorrectlyGuessedLetters = 0
 
         for (index in word.indices) {
             val layoutParameters = GridLayout.LayoutParams().apply {
@@ -116,6 +119,7 @@ class Game : AppCompatActivity() {
                     if (guessedLetter.text == textView_letter.text) {
                         guessedLetter.visibility = TextView.VISIBLE
                         foundMatchingLetters = true
+                        numberOfCorrectlyGuessedLetters++
                     }
                 }
                 textView_letter.visibility = TextView.INVISIBLE
@@ -124,6 +128,26 @@ class Game : AppCompatActivity() {
                     runOnUiThread {
                         dyingManView.invalidate()
                     }
+                    if (dyingManView.deathProgress == 1f) {
+                        // Game over! Show the missing letters in black and start the game over screen after a delay
+                        for (guessedLetter in guessedLetterViews) {
+                            if (guessedLetter.visibility == TextView.INVISIBLE) {
+                                guessedLetter.setTextColor(Color.BLACK)
+                                guessedLetter.visibility = TextView.VISIBLE
+                            }
+                        }
+                        Handler().postDelayed({
+                            finish()
+                            startActivity(Intent(this, GameOver::class.java).apply {
+                                putExtra(MESSAGE_DIFFICULTY_MEAN, intent.getFloatExtra(MESSAGE_DIFFICULTY_MEAN, 0.5f))
+                                putExtra(MESSAGE_DIFFICULTY_STANDARD_DEVIATION, intent.getFloatExtra(MESSAGE_DIFFICULTY_STANDARD_DEVIATION, 0.5f))
+                            })
+                            overridePendingTransition(0, 0)
+                        }, 1000)
+                    }
+                }
+                else if (numberOfCorrectlyGuessedLetters == word.length) {
+
                 }
             }
             grid_letters.addView(textView_letter)
