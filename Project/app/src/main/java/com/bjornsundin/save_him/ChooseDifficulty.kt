@@ -7,8 +7,8 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.slider.Slider
 
-const val MESSAGE_DIFFICULTY_MEAN = "mean"
-const val MESSAGE_DIFFICULTY_STANDARD_DEVIATION = "standard deviation"
+const val MESSAGE_DIFFICULTY_MEAN = "MESSAGE_DIFFICULTY_MEAN"
+const val MESSAGE_DIFFICULTY_STANDARD_DEVIATION = "MESSAGE_DIFFICULTY_STANDARD_DEVIATION"
 
 class ChooseDifficulty : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

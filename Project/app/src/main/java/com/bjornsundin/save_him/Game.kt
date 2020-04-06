@@ -16,17 +16,19 @@ import kotlin.math.min
 
 val Float.px: Int get() = (this * Resources.getSystem().displayMetrics.density + 0.5f).toInt()
 
+const val MESSAGE_PLAYER_WON = "MESSAGE_PLAYER_WON"
+
 class Game : AppCompatActivity() {
     companion object {
         const val ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-        const val NUMBER_OF_FAILED_ATTEMPTS_BEFORE_DEATH = 5
+        const val NUMBER_OF_FAILED_ATTEMPTS_BEFORE_DEATH = 6
     }
 
-    fun chooseWord(): String {
+    private fun chooseWord(): String {
         val words = resources.openRawResource(R.raw.words).bufferedReader().readLines()
 
         val mean = intent.getFloatExtra(MESSAGE_DIFFICULTY_MEAN, 0.5f)
-        val standardDeviation = 0.01f + 0.2f*intent.getFloatExtra(MESSAGE_DIFFICULTY_STANDARD_DEVIATION, 0.5f)
+        val standardDeviation = 0.01f + 0.5f*intent.getFloatExtra(MESSAGE_DIFFICULTY_STANDARD_DEVIATION, 0.5f)
 
         val randomGenerator = Random()
         var index = (words.size*(randomGenerator.nextGaussian()*standardDeviation + mean)).toInt()
@@ -36,6 +38,16 @@ class Game : AppCompatActivity() {
             abs(words.size - index % words.size - 1)
         }
         return words[index]
+    }
+
+    private fun showGameOverScreen(p_playerWon: Boolean) {
+        startActivity(Intent(this, GameOver::class.java).apply {
+            putExtra(MESSAGE_DIFFICULTY_MEAN, intent.getFloatExtra(MESSAGE_DIFFICULTY_MEAN, 0.5f))
+            putExtra(MESSAGE_DIFFICULTY_STANDARD_DEVIATION, intent.getFloatExtra(MESSAGE_DIFFICULTY_STANDARD_DEVIATION, 0.5f))
+            putExtra(MESSAGE_PLAYER_WON, p_playerWon)
+        })
+        finish()
+        overridePendingTransition(0, 0)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -137,17 +149,12 @@ class Game : AppCompatActivity() {
                             }
                         }
                         Handler().postDelayed({
-                            finish()
-                            startActivity(Intent(this, GameOver::class.java).apply {
-                                putExtra(MESSAGE_DIFFICULTY_MEAN, intent.getFloatExtra(MESSAGE_DIFFICULTY_MEAN, 0.5f))
-                                putExtra(MESSAGE_DIFFICULTY_STANDARD_DEVIATION, intent.getFloatExtra(MESSAGE_DIFFICULTY_STANDARD_DEVIATION, 0.5f))
-                            })
-                            overridePendingTransition(0, 0)
+                            showGameOverScreen(false)
                         }, 1000)
                     }
                 }
                 else if (numberOfCorrectlyGuessedLetters == word.length) {
-
+                    showGameOverScreen(true)
                 }
             }
             grid_letters.addView(textView_letter)

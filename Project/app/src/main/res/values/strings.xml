@@ -8,7 +8,9 @@
     <string name="the_dying_man">The dying man</string>
     <string name="you_murdered_him">YOU SQUISHED HIM</string>
     <string name="disappointed">disappointed</string>
-    <string name="try_again">TRY AGAIN</string>
+    <string name="try_again">PLAY AGAIN</string>
     <string name="change_difficulty">CHANGE DIFFICULTY</string>
     <string name="home">HOME</string>
+    <string name="you_saved_him">YOU SAVED HIM</string>
+    <string name="thank_you">thank you</string>
 </resources>
