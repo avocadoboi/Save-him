@@ -21,6 +21,8 @@ public:
     {
         setThemeColor(AvoGUI::ThemeColors::primary, Colors::primary);
         setThemeColor(AvoGUI::ThemeColors::primaryOnBackground, Colors::primary);
+        setThemeColor(AvoGUI::ThemeColors::background, Colors::background);
+        setThemeColor(AvoGUI::ThemeColors::onBackground, Colors::onBackground);
 
         //------------------------------
         // Load font

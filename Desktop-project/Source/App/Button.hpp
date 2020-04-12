@@ -29,11 +29,19 @@ public:
 
 	void updateLayout()
 	{
-		setSize(m_text->getWidth() * 1.8f, m_text->getHeight() * 2.f);
+		setCornerRadius(m_text->getHeight() * 0.4f);
+		setSize(m_text->getWidth() + m_text->getHeight() * 1.5f, m_text->getHeight() * 2.f);
 	}
 	void handleSizeChange() override
 	{
 		m_text->setCenter(getCenter());
+	}
+	void setScale(float p_factor)
+	{
+		m_text->setFontSize(DEFAULT_SIZE * p_factor);
+		m_text->fitSizeToText();
+		updateLayout();
+		handleSizeChange();
 	}
 
 	void draw(AvoGUI::DrawingContext* p_context) override
