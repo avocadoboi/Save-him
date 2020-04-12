@@ -3,7 +3,6 @@ package com.bjornsundin.save_him
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
 import com.google.android.material.button.MaterialButton
 
 class StartScreen : AppCompatActivity() {
