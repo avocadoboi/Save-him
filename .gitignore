@@ -4,4 +4,8 @@
 !Assets/*
 !*.md
 !**/src/**
+!**/Source/**
+!**/Resources/**
+!CMakeLists.txt
 !*/
+**/*.obj
