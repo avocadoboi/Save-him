@@ -1,9 +1,12 @@
 #pragma once
 
-#include "../App/Button.hpp"
-#include "../App/Slider.hpp"
-#include "../../Resources/Strings.hpp"
-#include "../../Resources/Paths.hpp"
+#include "App.hpp"
+#include "Game.hpp"
+
+#include "Button.hpp"
+#include "Slider.hpp"
+#include "../Resources/Strings.hpp"
+#include "../Resources/Paths.hpp"
 
 #include <AvoGUI.hpp>
 
@@ -26,56 +29,35 @@ private:
 
 	//------------------------------
 
-	App* m_app;
+	AvoGUI::Text m_title{ getDrawingContext()->createText(Strings::chooseDifficulty, 40.f) };
 
-	AvoGUI::Text* m_title{ getDrawingContext()->createText(Strings::chooseDifficulty, 40.f) };
+	AvoGUI::Image m_man{ getDrawingContext()->createImage(Paths::man) };
 
-	AvoGUI::Image* m_man{ getDrawingContext()->createImage(Paths::man) };
-
-	AvoGUI::Text* m_text_mean{ getDrawingContext()->createText(Strings::mean, 25.f) };
+	AvoGUI::Text m_text_mean{ getDrawingContext()->createText(Strings::mean, 25.f) };
 	Slider* m_slider_mean{ new Slider(this, SLIDER_WIDTH) };
 
-	AvoGUI::Text* m_text_standardDeviation{ getDrawingContext()->createText(Strings::standardDeviation, 25.f) };
+	AvoGUI::Text m_text_standardDeviation{ getDrawingContext()->createText(Strings::standardDeviation, 25.f) };
 	Slider* m_slider_standardDeviation{ new Slider(this, SLIDER_WIDTH) };
 
 	Button* m_button_play{ new Button(this, Strings::saveTheMan) };
 
 public:
-	ChooseDifficulty(View* p_parent) :
-		View(p_parent), m_app((App*)p_parent)
-	{
-		m_man->setBoundsSizing(AvoGUI::ImageBoundsSizing::Contain);
-		m_man->setWidth(MAN_WIDTH);
-		m_button_play->setScale(BUTTON_SCALE);
-		m_button_play->addMouseUpListener([this](AvoGUI::MouseEvent const&) {
-			startGame();
-		});
-		enableMouseEvents();
-	}
-	~ChooseDifficulty()
-	{
-		m_man->forget();
-		m_title->forget();
-	}
-
-	void startGame();
-
 	void handleSizeChange() override
 	{
-		m_title->setCenter(getCenterX(), getHeight() * TITLE_POSITION);
+		m_title.setCenter(getCenterX(), getHeight() * TITLE_POSITION);
 
-		m_man->setCenter(getWidth() * 0.25f, getHeight()*0.5f);
+		m_man.setCenter(getWidth() * 0.25f, getHeight()*0.5f);
 
 		float rightCenter = getWidth()*0.6f;
 		m_slider_mean->setCenterX(rightCenter);
 		m_slider_mean->setTop(getHeight() * MEAN_POSITION);
-		m_text_mean->setCenterX(rightCenter);
-		m_text_mean->setBottom(m_slider_mean->getTop() - MARGIN_BETWEEN_TEXT_AND_SLIDER);
+		m_text_mean.setCenterX(rightCenter);
+		m_text_mean.setBottom(m_slider_mean->getTop() - MARGIN_BETWEEN_TEXT_AND_SLIDER);
 
 		m_slider_standardDeviation->setCenterX(rightCenter);
 		m_slider_standardDeviation->setTop(getHeight() * STANDARD_DEVIATION_POSITION);
-		m_text_standardDeviation->setCenterX(rightCenter);
-		m_text_standardDeviation->setBottom(m_slider_standardDeviation->getTop() - MARGIN_BETWEEN_TEXT_AND_SLIDER);
+		m_text_standardDeviation.setCenterX(rightCenter);
+		m_text_standardDeviation.setBottom(m_slider_standardDeviation->getTop() - MARGIN_BETWEEN_TEXT_AND_SLIDER);
 
 		m_button_play->setCenter(getCenterX(), getHeight() * BUTTON_POSITION);
 	}
@@ -87,5 +69,18 @@ public:
 		p_context->drawText(m_title);
 		p_context->drawText(m_text_mean);
 		p_context->drawText(m_text_standardDeviation);
+	}
+
+	ChooseDifficulty(View* p_parent) :
+		View(p_parent)
+	{
+		m_man.setBoundsSizing(AvoGUI::ImageBoundsSizing::Contain);
+		m_man.setWidth(MAN_WIDTH);
+		m_button_play->setScale(BUTTON_SCALE);
+		m_button_play->mouseUpListeners += [this](AvoGUI::MouseEvent const&) {
+			auto app = getParent<App>();
+			app->launchScreen(new Game(app, m_slider_mean->getValue(), m_slider_standardDeviation->getValue()));
+		};
+		enableMouseEvents();
 	}
 };

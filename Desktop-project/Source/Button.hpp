@@ -7,39 +7,22 @@ private:
 	static constexpr float DEFAULT_SIZE = 40.f;
 	static constexpr float STROKE_WIDTH = 5.f;
 	
-	AvoGUI::Text* m_text{ nullptr };
+	AvoGUI::Text m_text;
 
 public:
-	Button(AvoGUI::View* p_parent, std::string const& p_string) :
-		View(p_parent)
-	{
-		m_text = getGui()->getDrawingContext()->createText(p_string, DEFAULT_SIZE);
-		
-		setCornerRadius(DEFAULT_SIZE * 0.5f);
-		setCursor(AvoGUI::Cursor::Hand);
-
-		new AvoGUI::Ripple(this, AvoGUI::Color(getThemeColor(AvoGUI::ThemeColors::primary), 0.3f));
-
-		updateLayout();
-	}
-	~Button()
-	{
-		m_text->forget();
-	}
-
 	void updateLayout()
 	{
-		setCornerRadius(m_text->getHeight() * 0.4f);
-		setSize(m_text->getWidth() + m_text->getHeight() * 1.5f, m_text->getHeight() * 2.f);
+		setCornerRadius(m_text.getHeight() * 0.4f);
+		setSize(m_text.getWidth() + m_text.getHeight() * 1.5f, m_text.getHeight() * 2.f);
 	}
 	void handleSizeChange() override
 	{
-		m_text->setCenter(getCenter());
+		m_text.setCenter(getCenter());
 	}
 	void setScale(float p_factor)
 	{
-		m_text->setFontSize(DEFAULT_SIZE * p_factor);
-		m_text->fitSizeToText();
+		m_text.setFontSize(DEFAULT_SIZE * p_factor);
+		m_text.fitSizeToText();
 		updateLayout();
 		handleSizeChange();
 	}
@@ -58,5 +41,17 @@ public:
 	{
 		p_context->setColor(getThemeColor(AvoGUI::ThemeColors::primary));
 		p_context->strokeRectangle(getSize(), getCorners(), STROKE_WIDTH);
+	}
+
+	Button(AvoGUI::View* p_parent, std::string const& p_string) :
+		View(p_parent),
+		m_text(getGui()->getDrawingContext()->createText(p_string, DEFAULT_SIZE))
+	{
+		setCornerRadius(DEFAULT_SIZE * 0.5f);
+		setCursor(AvoGUI::Cursor::Hand);
+
+		new AvoGUI::Ripple(this, AvoGUI::Color(getThemeColor(AvoGUI::ThemeColors::primary), 0.3f));
+
+		updateLayout();
 	}
 };

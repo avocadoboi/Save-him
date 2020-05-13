@@ -6,8 +6,9 @@ set(CMAKE_CXX_STANDARD 17)
 include_directories("../../AvoGUI/")
 
 file(GLOB source
-	"Source/**/*.hpp"
-	"Source/**/*.cpp"
+	"Source/*.hpp"
+	"Source/*.cpp"
+	"Resources/*.hpp"
 	"../../AvoGUI/AvoGUI.hpp"
 	"../../AvoGUI/AvoGUI.cpp"
 )

@@ -2,10 +2,10 @@
 
 namespace Strings
 {
-	char const* const chooseDifficulty = "Choose difficulty";
-	char const* const mean = "Mean";
-	char const* const play = "PLAY";
-	char const* const saveHim = "Save him";
-	char const* const saveTheMan = "SAVE THE MAN";
-	char const* const standardDeviation = "Standard deviation";
+	inline std::string const chooseDifficulty = "Choose difficulty";
+	inline std::string const mean = "Mean";
+	inline std::string const play = "PLAY";
+	inline std::string const saveHim = "Save him";
+	inline std::string const saveTheMan = "SAVE THE MAN";
+	inline std::string const standardDeviation = "Standard deviation";
 }

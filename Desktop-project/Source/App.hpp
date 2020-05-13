@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../StartScreen/StartScreen.hpp"
-#include "../../Resources/Colors.hpp"
+#include "StartScreen.hpp"
+#include "../Resources/Colors.hpp"
 
 #include <AvoGUI.hpp>
 #include <stack>
@@ -10,34 +10,6 @@
 
 class App : public AvoGUI::Gui
 {
-public:
-    App()
-    {
-        create("Save him", 500, 400);
-        waitForFinish();
-    }
-
-    void createContent()
-    {
-        setThemeColor(AvoGUI::ThemeColors::primary, Colors::primary);
-        setThemeColor(AvoGUI::ThemeColors::primaryOnBackground, Colors::primary);
-        setThemeColor(AvoGUI::ThemeColors::background, Colors::background);
-        setThemeColor(AvoGUI::ThemeColors::onBackground, Colors::onBackground);
-
-        //------------------------------
-        // Load font
-
-        getDrawingContext()->addFont(Paths::font);
-
-        AvoGUI::TextProperties textProperties;
-        textProperties.fontFamilyName = "Comic Sans MS";
-        getDrawingContext()->setDefaultTextProperties(textProperties);
-
-        //------------------------------
-
-        launchScreen(new StartScreen(this));
-    }
-
 private:
     std::stack<AvoGUI::View*> m_screenStack;
 
@@ -72,6 +44,7 @@ public:
         m_screenStack.top()->setIsVisible(true);
         invalidate();
     }
+
     void handleSizeChange()
     {
         if (!m_screenStack.empty())
@@ -80,4 +53,30 @@ public:
         }
     }
 
+    //------------------------------
+
+    App()
+    {
+        create("Save him", 500, 400);
+
+        setThemeColor(AvoGUI::ThemeColors::primary, Colors::primary);
+        setThemeColor(AvoGUI::ThemeColors::primaryOnBackground, Colors::primary);
+        setThemeColor(AvoGUI::ThemeColors::background, Colors::background);
+        setThemeColor(AvoGUI::ThemeColors::onBackground, Colors::onBackground);
+
+        //------------------------------
+        // Load font
+
+        getDrawingContext()->addFont(Paths::font);
+
+        AvoGUI::TextProperties textProperties;
+        textProperties.fontFamilyName = "Comic Sans MS";
+        getDrawingContext()->setDefaultTextProperties(textProperties);
+
+        //------------------------------
+
+        launchScreen(new StartScreen(this));
+
+        run();
+    }
 };
