@@ -5,5 +5,5 @@
 void StartScreen::startGame()
 {
 	auto app = getParent<App>();
-	app->launchScreen(new ChooseDifficulty(app));
+	app->launchScreen(new ChooseDifficulty{ app });
 }

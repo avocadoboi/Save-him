@@ -11,11 +11,12 @@
 
 class DyingMan : public AvoGUI::View
 {
+public:
+	inline static AvoGUI::Point<float> const SIZE{ 250.f, 250.f };
+	static constexpr float DEATH_RATE = 1.f / 6.f;
+
 private:
-	static constexpr float DEATH_RATE{ 1.f / 6.f };
-
-	float m_deathProgress{ 0.f };
-
+	float m_deathProgress = 0.f;
 public:
 	/*
 		Returns true if the man is dead
@@ -30,9 +31,8 @@ public:
 	}
 
 private:
-	AvoGUI::Image m_man{ getDrawingContext()->createImage(Paths::man) };
-	AvoGUI::Image m_rock{ getDrawingContext()->createImage(Paths::rock) };
-
+	AvoGUI::Image m_man = getDrawingContext()->createImage(Paths::man);
+	AvoGUI::Image m_rock = getDrawingContext()->createImage(Paths::rock);
 public:
 	// Will only be called at the beginning
 	void handleSizeChange() override
@@ -58,6 +58,8 @@ public:
 	{
 		m_rock.setSize(m_rock.getSize() / 7.f);
 		m_man.setSize(m_man.getSize() / 7.f);
+
+		setSize(SIZE);
 	}
 };
 
@@ -66,12 +68,12 @@ public:
 class GuessedWord : public AvoGUI::View
 {
 public:
-	static constexpr float FONT_SIZE = 20.f;
-	static constexpr float LETTER_HEIGHT = 25.f;
-	static constexpr float LETTER_WIDTH = 25.f;
+	static constexpr float FONT_SIZE = 30.f;
+	static constexpr float LETTER_HEIGHT = 34.f;
+	static constexpr float LETTER_WIDTH = 30.f;
 
 private:
-	AvoGUI::Text m_underscore{ getDrawingContext()->createText("_", FONT_SIZE) };
+	AvoGUI::Text m_underscore = getDrawingContext()->createText("_", FONT_SIZE);
 	std::vector<AvoGUI::TextView*> m_letters;
 public:
 	void draw(AvoGUI::DrawingContext* p_context) override
@@ -122,24 +124,25 @@ public:
 		return m_numberOfLettersLeft == 0u;
 	}
 
-public:
 	GuessedWord(View* p_parent, float p_meanDifficulty, float p_standardDeviationDifficulty) :
-		View(p_parent)
+		View{ p_parent }
 	{
+		enableMouseEvents();
+
 		// Choose word
 
 		int32 numberOfWords = sizeof(words) / sizeof(char const*);
 		int32 index = numberOfWords * ((0.01f + 0.5f * p_standardDeviationDifficulty) * AvoGUI::randomNormal() + p_meanDifficulty);
-		index = index / numberOfWords & 1 == 0 ? std::abs(index % numberOfWords) : std::abs(numberOfWords - index % numberOfWords - 1);
+		index = (index / numberOfWords & 1) == 0 ? std::abs(index % numberOfWords) : std::abs(numberOfWords - index % numberOfWords - 1);
 
-		std::string const& word = words[index];
+		std::string word = words[index];
 
 		m_numberOfLettersLeft = word.size();
 		m_letters.reserve(word.size());
 
 		for (auto character : word)
 		{
-			m_letters.push_back(new AvoGUI::TextView(this, FONT_SIZE, std::string(1, character)));
+			m_letters.push_back(new AvoGUI::TextView{ this, FONT_SIZE, std::string(1, character) });
 			m_letters.back()->setSize(LETTER_WIDTH, LETTER_HEIGHT);
 			m_letters.back()->getText().setTextAlign(AvoGUI::TextAlign::Center);
 			m_letters.back()->setColor(Colors::primary);
@@ -155,7 +158,7 @@ public:
 
 //------------------------------
 
-class LetterView : public AvoGUI::View
+class GridLetterView : public AvoGUI::View
 {
 private:
 	AvoGUI::Text m_text;
@@ -175,12 +178,12 @@ public:
 	uint32 row;
 	char letter;
 
-	LetterView(AvoGUI::View* p_parent, char p_letter, uint32 p_column, uint32 p_row) :
-		View(p_parent),
-		m_text(getDrawingContext()->createText(std::string(1, p_letter), 30.f)),
-		column(p_column),
-		row(p_row),
-		letter(p_letter)
+	GridLetterView(AvoGUI::View* p_parent, char p_letter, uint32 p_column, uint32 p_row) :
+		View{ p_parent },
+		m_text{ getDrawingContext()->createText(std::string(1, p_letter), 30.f) },
+		column{ p_column },
+		row{ p_row },
+		letter{ p_letter }
 	{
 		enableMouseEvents();
 		setCursor(AvoGUI::Cursor::Hand);
@@ -189,15 +192,15 @@ public:
 
 class AlphabetGrid : public AvoGUI::View
 {
-private:
-	inline static const std::string ALPHABET{ "ABCDEFGHIJKLMNOPQRSTUVWXYZ" };
+public:
+	inline static const std::string ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	static constexpr uint32 COLUMNS = 10;
 	static constexpr uint32 ROWS = 3;
 	static constexpr float LETTER_WIDTH = 35.f;
 	static constexpr float LETTER_HEIGHT = 35.f;
 
-	std::array<LetterView*, COLUMNS*ROWS> m_letters;
-
+private:
+	std::array<GridLetterView*, COLUMNS*ROWS> m_letters;
 public:	
 	auto& getLetters()
 	{
@@ -205,12 +208,12 @@ public:
 	}
 
 	AlphabetGrid(AvoGUI::View* p_parent) :
-		View(p_parent, { 0.f, 0.f, COLUMNS * LETTER_WIDTH, ROWS * LETTER_HEIGHT })
+		View{ p_parent, { 0.f, 0.f, COLUMNS * LETTER_WIDTH, ROWS * LETTER_HEIGHT } }
 	{
 		enableMouseEvents();
 		for (uint32 a = 0; a < COLUMNS * ROWS; a++)
 		{
-			m_letters[a] = a < ALPHABET.size() ? new LetterView(this, ALPHABET[a], a % COLUMNS, a / COLUMNS) : nullptr;
+			m_letters[a] = a < ALPHABET.size() ? new GridLetterView{ this, ALPHABET[a], a % COLUMNS, a / COLUMNS } : nullptr;
 			if (m_letters[a])
 			{
 				m_letters[a]->setSize(LETTER_WIDTH, LETTER_HEIGHT);
@@ -224,53 +227,57 @@ public:
 
 class Game : public AvoGUI::View
 {
-private:
-	DyingMan* m_dyingMan{ new DyingMan(this) };
-	GuessedWord* m_guessedWord;
-	AlphabetGrid* m_alphabetGrid{ new AlphabetGrid(this) };
-
 public:
 	Game(AvoGUI::View* p_parent, float p_meanDifficulty, float p_standardDeviationDifficulty) :
-		View(p_parent)
+		View{ p_parent }
 	{
-		m_dyingMan->setSize(250.f, 250.f);
 		enableMouseEvents();
 
-		m_guessedWord = new GuessedWord(p_parent, p_meanDifficulty, p_standardDeviationDifficulty);
+		auto container = new AvoGUI::View{ this };
 
-		for (auto letter : m_alphabetGrid->getLetters()) 
+		auto dyingMan = new DyingMan{ container };
+		auto guessedWord = new GuessedWord{ container, p_meanDifficulty, p_standardDeviationDifficulty };
+		guessedWord->setTop(dyingMan->getBottom() + 15.f);
+		auto alphabetGrid = new AlphabetGrid{ container };
+		alphabetGrid->setTop(guessedWord->getBottom() + 4.f);
+		
+		container->setPadding(0);
+		for (auto child : *container)
+		{
+			child->setCenterX(container->getWidth()/2);
+		}
+
+		sizeChangeListeners += [=](auto...) { container->setCenter(getSize() / 2); };
+
+		for (auto letter : alphabetGrid->getLetters()) 
 		{
 			if (letter) 
 			{
 				letter->mouseDownListeners += [=](AvoGUI::MouseEvent const&) {
 					letter->setIsVisible(false);
-					if (m_guessedWord->guessLetter(letter->letter))
+					if (guessedWord->guessLetter(letter->letter))
 					{
-						if (m_guessedWord->getHasWon())
+						if (guessedWord->getHasWon())
 						{
-							auto app = getParent<App>();
-							app->launchScreen(new GameOver(app, true));
+							getGui()->addTimerCallback([=] {
+								auto app = getParent<App>();
+								app->closeScreen();
+								app->launchScreen(new GameOver{ app, true, p_meanDifficulty, p_standardDeviationDifficulty });
+							}, 1000);
 						}
 					}
-					else
+					else if (dyingMan->bringCloserToDeath())
 					{
-						if (m_dyingMan->bringCloserToDeath())
-						{
+						guessedWord->showAllLetters();
+							
+						getGui()->addTimerCallback([=] {
 							auto app = getParent<App>();
-							app->launchScreen(new GameOver(app, false));
-						}
+							app->closeScreen();
+							app->launchScreen(new GameOver{ app, false, p_meanDifficulty, p_standardDeviationDifficulty });
+						}, 1500);
 					}
 				};
 			}
 		}
-	}
-
-	void handleSizeChange()
-	{
-		m_dyingMan->setCenterX(getWidth() * 0.5f);
-		m_guessedWord->setCenterX(getWidth() * 0.5f);
-		m_guessedWord->setBottom((getHeight() + m_dyingMan->getBottom()) * 0.45f);
-		m_alphabetGrid->setCenter(getWidth()*0.5f);
-		m_alphabetGrid->setTop(m_guessedWord->getBottom());
 	}
 };

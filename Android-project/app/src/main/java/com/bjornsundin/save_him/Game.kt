@@ -32,7 +32,7 @@ class Game : AppCompatActivity() {
 
         val randomGenerator = Random()
         var index = (words.size*(randomGenerator.nextGaussian()*standardDeviation + mean)).toInt()
-        index = if ((index / words.size) and 1 == 0) {
+        index = if (((index / words.size) and 1) == 0) {
             abs(index % words.size)
         } else {
             abs(words.size - index % words.size - 1)

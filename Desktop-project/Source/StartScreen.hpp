@@ -4,8 +4,6 @@
 #include "../Resources/Paths.hpp"
 #include "../Resources/Strings.hpp"
 
-#include <AvoGUI.hpp>
-
 //------------------------------
 
 class App;
@@ -13,9 +11,9 @@ class App;
 class StartScreen : public AvoGUI::View
 {
 private:
-	AvoGUI::Image m_backgroundImage{ getGui()->getDrawingContext()->createImage(Paths::startScreenBackground) };
-	AvoGUI::Text m_title{ getGui()->getDrawingContext()->createText(Strings::saveHim, 50.f) };
-	Button* m_playButton{ new Button(this, Strings::play) };
+	AvoGUI::Image m_backgroundImage = getGui()->getDrawingContext()->createImage(Paths::startScreenBackground);
+	AvoGUI::Text m_title = getGui()->getDrawingContext()->createText(Strings::saveHim, 50.f);
+	Button* m_playButton = new Button(this, Strings::play);
 
 public:
 	void handleSizeChange() override
@@ -38,14 +36,12 @@ private:
 
 public:
 	StartScreen(View* p_parent) :
-		View(p_parent)
+		View{ p_parent }
 	{
 		m_backgroundImage.setBoundsSizing(AvoGUI::ImageBoundsSizing::Fill);
 
 		enableMouseEvents();
 
-		m_playButton->mouseUpListeners += [this](AvoGUI::MouseEvent const) {
-			startGame();
-		};
+		m_playButton->clickListeners += [this] { startGame(); };
 	}
 };

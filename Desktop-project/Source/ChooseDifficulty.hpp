@@ -3,12 +3,9 @@
 #include "App.hpp"
 #include "Game.hpp"
 
-#include "Button.hpp"
 #include "Slider.hpp"
 #include "../Resources/Strings.hpp"
 #include "../Resources/Paths.hpp"
-
-#include <AvoGUI.hpp>
 
 //------------------------------
 
@@ -16,7 +13,7 @@ class App;
 
 class ChooseDifficulty : public AvoGUI::View
 {
-private:
+public:
 	static constexpr float TITLE_POSITION = 0.2f;
 	static constexpr float MEAN_POSITION = 0.4f;
 	static constexpr float STANDARD_DEVIATION_POSITION = 0.6f;
@@ -29,17 +26,18 @@ private:
 
 	//------------------------------
 
-	AvoGUI::Text m_title{ getDrawingContext()->createText(Strings::chooseDifficulty, 40.f) };
+private:
+	AvoGUI::Text m_title = getDrawingContext()->createText(Strings::chooseDifficulty, 40.f);
 
-	AvoGUI::Image m_man{ getDrawingContext()->createImage(Paths::man) };
+	AvoGUI::Image m_man = getDrawingContext()->createImage(Paths::man);
 
-	AvoGUI::Text m_text_mean{ getDrawingContext()->createText(Strings::mean, 25.f) };
-	Slider* m_slider_mean{ new Slider(this, SLIDER_WIDTH) };
+	AvoGUI::Text m_text_mean = getDrawingContext()->createText(Strings::mean, 25.f);
+	Slider* m_slider_mean = new Slider{ this, SLIDER_WIDTH };
 
-	AvoGUI::Text m_text_standardDeviation{ getDrawingContext()->createText(Strings::standardDeviation, 25.f) };
-	Slider* m_slider_standardDeviation{ new Slider(this, SLIDER_WIDTH) };
+	AvoGUI::Text m_text_standardDeviation = getDrawingContext()->createText(Strings::standardDeviation, 25.f);
+	Slider* m_slider_standardDeviation = new Slider{ this, SLIDER_WIDTH };
 
-	Button* m_button_play{ new Button(this, Strings::saveTheMan) };
+	Button* m_button_play = new Button{ this, Strings::saveTheMan };
 
 public:
 	void handleSizeChange() override
@@ -72,15 +70,17 @@ public:
 	}
 
 	ChooseDifficulty(View* p_parent) :
-		View(p_parent)
+		View{ p_parent }
 	{
 		m_man.setBoundsSizing(AvoGUI::ImageBoundsSizing::Contain);
 		m_man.setWidth(MAN_WIDTH);
-		m_button_play->setScale(BUTTON_SCALE);
-		m_button_play->mouseUpListeners += [this](AvoGUI::MouseEvent const&) {
+
+		m_button_play->setThemeValue(ThemeValues::buttonScale, BUTTON_SCALE);
+		m_button_play->clickListeners += [this] {
 			auto app = getParent<App>();
-			app->launchScreen(new Game(app, m_slider_mean->getValue(), m_slider_standardDeviation->getValue()));
+			app->launchScreen(new Game{ app, m_slider_mean->getValue(), m_slider_standardDeviation->getValue() });
 		};
+
 		enableMouseEvents();
 	}
 };
