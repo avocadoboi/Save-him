@@ -56,6 +56,8 @@ public:
 	DyingMan(AvoGUI::View* p_parent) :
 		View(p_parent)
 	{
+		enableMouseEvents();
+
 		m_rock.setSize(m_rock.getSize() / 7.f);
 		m_man.setSize(m_man.getSize() / 7.f);
 
@@ -234,6 +236,7 @@ public:
 		enableMouseEvents();
 
 		auto container = new AvoGUI::View{ this };
+		container->enableMouseEvents();
 
 		auto dyingMan = new DyingMan{ container };
 		auto guessedWord = new GuessedWord{ container, p_meanDifficulty, p_standardDeviationDifficulty };

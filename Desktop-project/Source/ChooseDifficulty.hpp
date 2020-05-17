@@ -72,6 +72,8 @@ public:
 	ChooseDifficulty(View* p_parent) :
 		View{ p_parent }
 	{
+		enableMouseEvents();
+
 		m_man.setBoundsSizing(AvoGUI::ImageBoundsSizing::Contain);
 		m_man.setWidth(MAN_WIDTH);
 
@@ -80,7 +82,5 @@ public:
 			auto app = getParent<App>();
 			app->launchScreen(new Game{ app, m_slider_mean->getValue(), m_slider_standardDeviation->getValue() });
 		};
-
-		enableMouseEvents();
 	}
 };

@@ -64,7 +64,8 @@ public:
 
 	App()
 	{
-		create("Save him", INITIAL_SIZE);
+		using Styles = AvoGUI::WindowStyleFlags;
+		create("Save him", INITIAL_SIZE, Styles::MinimizeButton | Styles::CloseButton | Styles::Resizable);
 		getWindow()->setMinSize(MIN_SIZE);
 		getWindow()->setMaxSize(MAX_SIZE);
 
@@ -83,6 +84,8 @@ public:
 		getDrawingContext()->setDefaultTextProperties(textProperties);
 
 		//------------------------------
+
+		enableMouseEvents();
 
 		launchScreen(new StartScreen{ this });
 

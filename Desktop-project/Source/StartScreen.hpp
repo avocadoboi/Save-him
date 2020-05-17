@@ -39,6 +39,7 @@ public:
 		View{ p_parent }
 	{
 		m_backgroundImage.setBoundsSizing(AvoGUI::ImageBoundsSizing::Fill);
+		m_backgroundImage.setOpacity(0.6f);
 
 		enableMouseEvents();
 
