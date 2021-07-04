@@ -1,94 +1,79 @@
 #pragma once
 
 #include "StartScreen.hpp"
-#include "../Resources/Colors.hpp"
+#include "../Resources/colors.hpp"
 
 #include <stack>
 
 //------------------------------
 
-class App : public AvoGUI::Gui
-{
-public:
-	inline static AvoGUI::Point<float> const
-		INITIAL_SIZE{ 500.f, 500.f },
-		MIN_SIZE{ 440.f, 410.f },
-		MAX_SIZE{ 700.f, 600.f };
+namespace hangman_desktop {
 
+/*
+	concept HasGuiCallbacks evaluates to true
+*/
+class GuiManager {
 private:
-	std::stack<AvoGUI::View*> m_screenStack;
+	using Styles = avo::WindowStyleFlags;
+
+	avo::Gui<GuiManager> _gui = avo::make_gui()
+		.with_manager(this)
+		.with_title("Save him")
+		.with_window_styles(Styles::MinimizeButton | Styles::CloseButton | Styles::Resizable)
+		.with_initial_size({500.f, 500.f})
+		.with_size_range({440.f, 410.f}, {700.f, 600.f})
+		.with_theme_colors({
+			{avo::theme_colors::primary, colors::primary},
+			{avo::theme_colors::background, colors::background},
+			{avo::theme_colors::onBackground, colors::onBackground}
+		})
+		.finish();
+
+	friend class avo::Gui<GuiManager>;
+	auto handle_size_change(Gui<GuiManager>&) -> void {
+		if (!_screen_stack.empty()) {
+			_screen_stack.top()->size(_gui.size());
+		}
+	}
+
+	std::stack<avo::View*> _screen_stack;
 
 public:
-	void launchScreen(AvoGUI::View* p_view)
-	{
-		if (!m_screenStack.empty())
-		{
-			m_screenStack.top()->setIsVisible(false);
+	auto launch_screen(avo::View* const view) -> void {
+		if (!_screen_stack.empty()) {
+			_screen_stack.top()->is_visible(false);
 		}
-		m_screenStack.push(p_view);
-		p_view->setSize(getSize());
+		_screen_stack.push(view);
+		view->size(_gui.size());
 		invalidate();
 	}
-	void closeScreen()
-	{
-		if (m_screenStack.size() > 1)
-		{
-			removeChildView(m_screenStack.top());
-			m_screenStack.pop();
-			m_screenStack.top()->setIsVisible(true);
-			m_screenStack.top()->setSize(getSize());
-			invalidate();
+	auto close_screen() -> void {
+		if (_screen_stack.size() > 1) {
+			_gui.remove_view(_screen_stack.top());
+			_screen_stack.pop();
+			_screen_stack.top()->is_visible(true);
+			_screen_stack.top()->size(_gui.size());
 		}
 	}
-	void returnToHome()
-	{
-		while (m_screenStack.size() > 1)
-		{
-			removeChildView(m_screenStack.top());
-			m_screenStack.pop();
+	auto return_to_home() -> void {
+		while (_screen_stack.size() > 1) {
+			_gui.remove_view(_screen_stack.top());
+			_screen_stack.pop();
 		}
-		m_screenStack.top()->setIsVisible(true);
-		m_screenStack.top()->setSize(getSize());
-		invalidate();
-	}
-
-	void handleSizeChange()
-	{
-		if (!m_screenStack.empty())
-		{
-			m_screenStack.top()->setSize(getSize());
-		}
+		_screen_stack.top()->is_visible(true);
+		_screen_stack.top()->size(_gui.size());
 	}
 
 	//------------------------------
 
-	App()
-	{
-		using Styles = AvoGUI::WindowStyleFlags;
-		create("Save him", INITIAL_SIZE, Styles::MinimizeButton | Styles::CloseButton | Styles::Resizable);
-		getWindow()->setMinSize(MIN_SIZE);
-		getWindow()->setMaxSize(MAX_SIZE);
+	GuiManager() {
+		_gui.graphics()->add_font(paths::font);
+		_gui.graphics()->default_text_properties({ .font_family = "Comic Sans MS" });
 
-		setThemeColor(AvoGUI::ThemeColors::primary, Colors::primary);
-		setThemeColor(AvoGUI::ThemeColors::primaryOnBackground, Colors::primary);
-		setThemeColor(AvoGUI::ThemeColors::background, Colors::background);
-		setThemeColor(AvoGUI::ThemeColors::onBackground, Colors::onBackground);
+		launch_screen(_gui.add_view<StartScreen>());
 
-		//------------------------------
-		// Load font
-
-		getDrawingContext()->addFont(Paths::font);
-
-		AvoGUI::TextProperties textProperties;
-		textProperties.fontFamilyName = "Comic Sans MS";
-		getDrawingContext()->setDefaultTextProperties(textProperties);
-
-		//------------------------------
-
-		enableMouseEvents();
-
-		launchScreen(new StartScreen{ this });
-
-		run();
+		_gui.run();
 	}
 };
+
+} // namespace hangman_desktop

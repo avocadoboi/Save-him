@@ -1,5 +1,8 @@
-inline char const* const words[] = 
-{
+#include <array>
+
+namespace hangman_desktop {
+
+constexpr auto words = std::array{
 	"THE",
 	"AND",
 	"HAVE",
@@ -17547,3 +17550,5 @@ inline char const* const words[] =
 	"SUBMANDIBULAR",
 	"ETHMOID"
 };
+
+} // namespace hangman_desktop

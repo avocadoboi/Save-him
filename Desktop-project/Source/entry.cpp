@@ -5,7 +5,6 @@
 #pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
 #endif
 
-int main()
-{
-	new App;
+auto main() -> int {
+	auto app = hangman_slutprojekt::App{};
 }
